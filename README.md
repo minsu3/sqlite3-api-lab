@@ -42,6 +42,7 @@
 ## Orders request for Customers and Cars **MANY-TO-MANY** 
 
 |    Requests   |    Path     | Description  |
+| ----------- | ----------- | ----------- |
 | GET    | /api/orders     |  Get all customer orders   |
 | GET    | /api/customers/:id/cars  |  Get one customer order   |
 | POST   | /api/customers/:id/cars/:carId     |  Create order information  |
