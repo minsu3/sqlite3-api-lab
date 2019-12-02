@@ -5,6 +5,7 @@ const customers_list = [
 		first_name: "Willard",
 		last_name: "Wilkinson",
 		home_city: "San Francisco"
+
 	},
 	{ 
 		first_name: "Elliott",
@@ -39,12 +40,26 @@ const customers_list = [
 ];
 
 const dealerships_list = [
-	{ location: "San Francisco" },
-	{ location: "Oakland" },
-	{ location: "Walnut Creek" },
-	{ location: "Dublin" },
-	{ location: "Stevens Creek" }
-	
+	{ 
+		make: "Toyota",
+		location: "San Francisco" 
+	},
+	{ 
+		make: "Subaru",
+		location: "Oakland" 
+	},
+	{ 
+		make: "Honda", 
+		location: "Walnut Creek" 
+	},
+	{ 
+		make: "BMW",
+		location: "Dublin" 
+	},
+	{
+		make: "Mercedes-Benz",
+	  location: "Stevens Creek" 
+	}
 ];
 
 const cars_list = [
@@ -136,18 +151,18 @@ db.serialize(()=> {
 		else console.log("Dropped 'dealerships' table");
 	})
 
-	const createDealershipsTableQuery = 'CREATE TABLE dealerships (location TEXT)';
+	const createDealershipsTableQuery = 'CREATE TABLE dealerships (make TEXT, location TEXT)';
 	db.run(createDealershipsTableQuery, error=> {
 		if(error) console.error("Error creating 'dealerships' table");
 		else console.log("Created 'dealerships' table");
 	})
 
-	const insertDealershipsQuery = 'INSERT INTO dealerships VALUES (?)';
+	const insertDealershipsQuery = 'INSERT INTO dealerships VALUES (?, ?)';
 	for(let dealership of dealerships_list) {
-		let dealershipData = [dealership.location];
+		let dealershipData = [dealership.make, dealership.location];
 		db.run(insertDealershipsQuery, dealershipData, error=> {
 			if(error) console.log("Could not insert dealership", dealership, error);
-			else console.log(`Inserted ${dealership.location} into 'dealerships' table`);
+			else console.log(`Inserted ${dealership.make} ${dealership.location}  into 'dealerships' table`);
 		})
 	}
 
@@ -181,10 +196,33 @@ db.serialize(()=> {
 		else console.log("Dropped 'orders' table");
 	})
 
-	const createOrdersTableQuery = 'CREATE TABLE orders (order_number INTEGER, customer_id INTEGER, car_id INTEGER)';
+	const createOrdersTableQuery = 'CREATE TABLE orders (customer_id INTEGER, car_id INTEGER)';
 	db.run(createOrdersTableQuery, error=> {
 		if(error) console.error("Error creating 'orders' table");
 		else console.log("Created 'orders' table");
 	})
 
+	// const insertOrdersTableQuery = 'INSERT INTO orders VALUES (?, ?, ?)';
+	// for(let order of orders) {
+	// 	let orderData = [order.orderId, ]
+	// }
+
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,6 +4,7 @@ let app = express();
 
 //Middleware 
 app.use(express.json());
+
 //Configuration Variables
 const port = 9000;
 
@@ -100,7 +101,6 @@ app.get('/api/dealerships', (req, res)=> {
 });
 
 app.get('/api/dealership', (req, res)=> {
-	console.log("inside function")
 	const dealershipLocation = req.body.location;
 	const getOneDealership = `SELECT * FROM dealerships WHERE dealerships.location = ?`;
 
@@ -202,10 +202,10 @@ app.post('/api/cars', (req, res)=> {
 
 app.put('/api/cars/:id', (req, res) => {
 	const carId = req.params.id;
-	const updateOneCar = `UPDATE cars SET MODEL = ?, MAKE = ?, YEAR = ?, BODY_TYPE = ?, WHEEL_DRIVE = ? WHERE cars.oid = ${carId}`;
+	const updateOneCar = `UPDATE cars SET MAKE = ?, MODEL = ?, YEAR = ?, BODY_TYPE = ?, WHEEL_DRIVE = ? WHERE cars.oid = ${carId}`;
 
 	//use the query string and req.body to run the query in the database
-	database.run(updateOneCar, [req.body.make, req.body.model], error=> {
+	database.run(updateOneCar, [req.body.make, req.body.model, req.body.year, req.body.body_type, req.body.wheel_drive], error=> {
 		if(error) {
 			console.log(`Update car make: ${req.body.make} model: ${req.body.model} failed`, error);
 			res.sendStatus(500);
@@ -216,7 +216,6 @@ app.put('/api/cars/:id', (req, res) => {
 	})
 })
 
-//THIS DOESN'T CHANGE THE OTHER DESCRIPTIONS :(
 
 app.delete('/api/cars/:id', (req, res)=> {
 	const carId = [req.params.id];
@@ -262,12 +261,41 @@ app.get('/api/orders', (req, res) => {
 })
 
 //Create an association
-app.post('/api/customers/:id/cars', (req, res)=>{
+app.post('/api/customers/:id/cars/:carId', (req, res)=>{
 	const customerId = req.params.id;
-	const carId = req.body.car_id;
-	cons
-})
+	const carId = req.params.carId;
+	const insertString = "INSERT INTO orders VALUES (?, ?)";
 
+	database.run(insertString, [customerId, carId], error => {
+		if(error) {
+			console.log(`Error in creating association between customer and car`, error)
+			res.sendStatus(500);
+		}
+		else {
+			console.log(`Creating association between customer and cars`);
+			res.sendStatus(200);
+		}
+	});
+});
+
+// app.put("/api/orders/",  (req, res) => {
+//   console.log("Updating book category", req.body)
+//   let body = req.body
+//   let updateBookCat = "UPDATE bookcategories SET categoryID = ? WHERE bookID = ? AND categoryID = ?"
+//   //Keys are bookID, oldcatID (Category ID to be changed), newcatID (new Category ID value)
+//   database.run(updateBookCat, [body.newcatID, body.bookID, body.oldcatID], (error) => {
+//       if (error) {
+//         console.error(new Error("Could not update book cat", error))
+//         res.sendStatus(500)
+//       }    
+//       else {
+//         console.log(req.body)
+//         res.send("Updated book Cat!")
+//     }
+//   })
+// })
+
+//Delete 
 app.delete('/api/orders/:id', (req, res) => {
 	const queryInsertion = [req.params.id];
 	const queryString = `DELETE FROM orders WHERE customer_id = ?`
@@ -277,8 +305,6 @@ app.delete('/api/orders/:id', (req, res) => {
 		else res.sendStatus(200);
 	})
 })
-
-
 
 
 app.listen(port, () => {

@@ -14,6 +14,7 @@ const createTableCustomersQuery =
 
 const createTableDealershipsQuery = `
 	CREATE TABLE IF NOT EXISTS dealerships (
+		make TEXT,
 		location TEXT)`;
 
 const createTableCarsQuery = `
@@ -24,9 +25,9 @@ const createTableCarsQuery = `
 		body_type TEXT,
 		wheel_drive TEXT)`;
 
+//many to many
 const createTableOrdersQuery = `
 	CREATE TABLE IF NOT EXISTS orders (
-		order_number,
 		customer_id,
 		car_id)`;
 
