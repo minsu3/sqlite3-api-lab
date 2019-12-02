@@ -1,6 +1,6 @@
 # Car Shopping API
 
-#### This API allows you to get the acquire information on stop car dealerships in Bay Area as well as each customer information and their purchase order. 
+#### This API allows you to get the acquire information on top car dealerships in Bay Area as well as each customer information and their purchase order. 
 
 ## Entity Relationship Diagram 
 ![carshoppingapi](./erd.png)

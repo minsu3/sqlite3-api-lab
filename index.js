@@ -233,26 +233,50 @@ app.delete('/api/cars/:id', (req, res)=> {
 	})
 })
 
-// Orders (join tables)
+//Orders (join tables)
 
-// app.get('/api/customers/:id/cars', (req, res)=> {
-// 	const customerId = req.params.id;
-// 	const queryString = "SELECT * FROM orders WHERE customer_id = ?";
+app.get('/api/customers/:id/cars', (req, res)=> {
+	const customerId = req.params.id;
+	const queryString = "SELECT * FROM orders WHERE customer_id = ?";
 
-// 	database.all(queryString, [customerId], (error, results) =>{
-// 		if(error) {
-// 			console.log(error)
-// 			res.sendStatus(500);
-// 		} else res.status(200).json(results);
-// 	})
-// })
-// //Create an association
-// app.post('/api/customers/:id/cars', (req, res)=>{
-// 	const customerId = req.params.id;
-// 	const carId = req.body.car_id;
-// 	cons
-// })
+	database.all(queryString, [customerId], (error, results) =>{
+		if(error) {
+			console.log(error)
+			res.sendStatus(500);
+		} else res.status(200).json(results);
+	})
+})
 
+//Retrieve all orders 
+app.get('/api/orders', (req, res) => {
+	const queryString = `SELECT * FROM orders`;
+
+	database.all(queryString, (error, results) => {
+		if(error) {
+			console.log(`Failed to retrieve all orders from orders table.`);
+			res.sendStatus(500);
+		} else {
+			res.status(200).json(results);
+		}
+	})
+})
+
+//Create an association
+app.post('/api/customers/:id/cars', (req, res)=>{
+	const customerId = req.params.id;
+	const carId = req.body.car_id;
+	cons
+})
+
+app.delete('/api/orders/:id', (req, res) => {
+	const queryInsertion = [req.params.id];
+	const queryString = `DELETE FROM orders WHERE customer_id = ?`
+
+	database.run(queryString, queryInsertion, error => {
+		if(error) res.sendStatus(500);
+		else res.sendStatus(200);
+	})
+})
 
 
 
