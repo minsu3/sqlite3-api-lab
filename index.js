@@ -72,9 +72,19 @@ app.put('/api/customers/:id', (req, res) => {
 //Delete one customer
 app.delete('/api/customers/:id', (req, res)=> {
 	const customerId = [req.params.id];
-	const deleteCustomer = `DELETE FROM customers WHERE ? = oid`;
+	const deleteCustomer = `DELETE FROM customers WHERE ? = customers.oid`;
+	const deleteCustomerOrder = `DELETE FROM orders WHERE ? = orders.customer_id`;
 
 	database.run(deleteCustomer, customerId, error=> {
+		if(error) {
+			console.log(`Delete from customer with ID of ${customerId} failed`);
+			res.sendStatus(500);
+		} else {
+			console.log(`Delete from customer with ID of ${customerId} succeeded`);
+			res.sendStatus(200);
+		}
+	})
+	database.run(deleteCustomerOrder, customerId, error=> {
 		if(error) {
 			console.log(`Delete from customer with ID of ${customerId} failed`);
 			res.sendStatus(500);
@@ -140,12 +150,12 @@ app.put('/api/dealerships/:id', (req, res) => {
 			console.log(`Dealership in ${req.body.location} was updated successfully`);
 			res.sendStatus(200);
 		}
-	})
-})
+	});
+});
 //Delete one dealership
 app.delete('/api/dealerships/:id', (req, res)=> {
 	const dealershipId = [req.params.id];
-	const deleteDealership = `DELETE FROM dealerships WHERE ? = oid`;
+	const deleteDealership = `DELETE FROM dealerships WHERE ? = dealerships.oid`;
 
 	database.run(deleteDealership, dealershipId, error=> {
 		if(error) {
@@ -155,8 +165,8 @@ app.delete('/api/dealerships/:id', (req, res)=> {
 			console.log(`Delete from dealerships with ID of ${dealershipId} succeeded`);
 			res.sendStatus(200);
 		}
-	})
-})
+	});
+});
 	
 //Cars
 //Get all cars 
@@ -213,12 +223,12 @@ app.put('/api/cars/:id', (req, res) => {
 			console.log(`Update car make: ${req.body.make} model: ${req.body.model} successfully`);
 			res.sendStatus(200);
 		}
-	})
-})
+	});
+});
 //Delete car 
 app.delete('/api/cars/:id', (req, res)=> {
 	const carId = [req.params.id];
-	const deleteCar = `DELETE FROM cars WHERE ? = oid`;
+	const deleteCar = `DELETE FROM cars WHERE ? = cars.oid`;
 
 	database.run(deleteCar, carId, error=> {
 		if(error) {
@@ -228,8 +238,8 @@ app.delete('/api/cars/:id', (req, res)=> {
 			console.log(`Delete from cars with ID of ${carId} succeeded`);
 			res.sendStatus(200);
 		}
-	})
-})
+	});
+});
 
 //Orders (join tables)
 
@@ -244,28 +254,26 @@ app.get('/api/orders', (req, res) => {
 		} else {
 			res.status(200).json(results);
 		}
-	})
-})
+	});
+});
 //Get one order
 app.get('/api/customers/:id/cars', (req, res)=> {
 	const customerId = req.params.id;
-	const queryString = "SELECT * FROM orders WHERE customer_id = ?";
+	const queryString = "SELECT * FROM orders WHERE orders.customer_id = ?";
 
 	database.all(queryString, [customerId], (error, results) =>{
 		if(error) {
 			console.log(error)
 			res.sendStatus(500);
 		} else res.status(200).json(results);
-	})
-})
+	});
+});
 //Create an order
 app.post('/api/customers/:id/cars/:carId', (req, res)=>{
-	const customerId = req.params.id;
-	const carId = req.params.carId;
-	const reqBody = [req.body.final_price, req.body.date_of_purchase]
+	const reqParams = [req.params.id, req.params.carId, req.body.final_price, req.body.date_of_purchase]
 	const insertString = "INSERT INTO orders VALUES (?, ?, ?, ?)";
 
-	database.run(insertString, [customerId, carId], reqBody, error => {
+	database.run(insertString, reqParams, error => {
 		if(error) {
 			console.log(`Error in creating association between customer and car`, error)
 			res.sendStatus(500);
@@ -276,6 +284,22 @@ app.post('/api/customers/:id/cars/:carId', (req, res)=>{
 		}
 	});
 });
+
+app.delete('/api/cars/:id', (req, res)=> {
+	const carId = [req.params.id];
+	const deleteCar = `DELETE FROM cars WHERE ? = cars.oid`;
+
+	database.run(deleteCar, carId, error=> {
+		if(error) {
+			console.log(`Delete from cars with ID of ${carId} failed`);
+			res.sendStatus(500);
+		} else {
+			console.log(`Delete from cars with ID of ${carId} succeeded`);
+			res.sendStatus(200);
+		}
+	});
+});
+
 
 
 
