@@ -93,7 +93,6 @@ app.delete('/api/customers/:id', (req, res)=> {
 })
 
 //Dealerships
-
 //Get all dealerships 
 app.get('/api/dealerships', (req, res)=> {
 	const getAllDealerships = 'SELECT * FROM dealerships';
@@ -282,9 +281,10 @@ app.post('/api/customers/:id/cars/:carId', (req, res)=>{
 	});
 });
 
+//Update
 app.put("/api/customers/:id/cars/:carId", (req, res) => {
-	const reqParams = [req.params.id, req.params.carId, req.body.final_price, req.body.date_of_purchase, req.params.id, req.params.carId]
-	let updateOrders = `UPDATE orders SET customer_id = ?, car_id = ?, final_price = ?, date_of_purchase = ? WHERE orders.customer_id = ${id} AND orders.car_id = ${carID}`
+const reqParams = [req.params.id, req.params.carId, req.body.final_price, req.body.date_of_purchase, req.params.id, req.params.carId]
+let updateOrders = `UPDATE orders SET customer_id = ?, car_id = ?, final_price = ?, date_of_purchase = ? WHERE orders.customer_id = ? AND orders.car_id = ?`
 
 	database.run(updateOrders, reqParams, error=> {
 		if(error) {
@@ -292,20 +292,6 @@ app.put("/api/customers/:id/cars/:carId", (req, res) => {
 			res.sendStatus(500);
 		} else {
 			console.log(`Update orders was updated successfully`);
-			res.sendStatus(200);
-		}
-	});
-
-app.delete('/api/cars/:id', (req, res)=> {
-	const carId = [req.params.id];
-	const deleteCar = `DELETE FROM cars WHERE ? = cars.oid`;
-
-	database.run(deleteCar, carId, error=> {
-		if(error) {
-			console.log(`Delete from cars with ID of ${carId} failed`);
-			res.sendStatus(500);
-		} else {
-			console.log(`Delete from cars with ID of ${carId} succeeded`);
 			res.sendStatus(200);
 		}
 	});
