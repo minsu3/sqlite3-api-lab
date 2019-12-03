@@ -78,18 +78,15 @@ app.delete('/api/customers/:id', (req, res)=> {
 	database.run(deleteCustomer, customerId, error=> {
 		if(error) {
 			console.log(`Delete from customer with ID of ${customerId} failed`);
-			res.sendStatus(500);
 		} else {
 			console.log(`Delete from customer with ID of ${customerId} succeeded`);
-			res.sendStatus(200);
 		}
 	})
 	database.run(deleteCustomerOrder, customerId, error=> {
 		if(error) {
-			console.log(`Delete from customer with ID of ${customerId} failed`);
 			res.sendStatus(500);
 		} else {
-			console.log(`Delete from customer with ID of ${customerId} succeeded`);
+			console.log(`Delete from orders with customer ID of ${customerId} succeeded`);
 			res.sendStatus(200);
 		}
 	})
@@ -285,6 +282,20 @@ app.post('/api/customers/:id/cars/:carId', (req, res)=>{
 	});
 });
 
+app.put("/api/customers/:id/cars/:carId", (req, res) => {
+	const reqParams = [req.params.id, req.params.carId, req.body.final_price, req.body.date_of_purchase, req.params.id, req.params.carId]
+	let updateOrders = `UPDATE orders SET customer_id = ?, car_id = ?, final_price = ?, date_of_purchase = ? WHERE orders.customer_id = ${id} AND orders.car_id = ${carID}`
+
+	database.run(updateOrders, reqParams, error=> {
+		if(error) {
+			console.log(`Update orders failed`, error);
+			res.sendStatus(500);
+		} else {
+			console.log(`Update orders was updated successfully`);
+			res.sendStatus(200);
+		}
+	});
+
 app.delete('/api/cars/:id', (req, res)=> {
 	const carId = [req.params.id];
 	const deleteCar = `DELETE FROM cars WHERE ? = cars.oid`;
@@ -299,8 +310,6 @@ app.delete('/api/cars/:id', (req, res)=> {
 		}
 	});
 });
-
-
 
 
 app.listen(port, () => {
