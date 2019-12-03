@@ -40,14 +40,14 @@
 | DELETE | /api/cars/:id   |  Delete car information  |
 
 ## Orders request for Customers and Cars **MANY-TO-MANY** 
+#### Create orders information through Postman
+#### Pass request param customer (row)ID, and request param car (row)ID
 
 |    Requests   |    Path     | Description  |
 | ----------- | ----------- | ----------- |
-| GET    | /api/orders     |  Get all customer orders   |
-| GET    | /api/customers/:id/cars  |  Get one customer order   |
+| GET    | /api/orders     |  Get all order information   |
+| GET    | /api/customers/:id/cars  |  Get one order information   |
 | POST   | /api/customers/:id/cars/:carId     |  Create order information  |
-| PUT    | /api/customers/:id   |  Update order information   |
-| DELETE | /api/orders/:id   |  Delete order information  |
 
 
 

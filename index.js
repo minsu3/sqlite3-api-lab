@@ -10,10 +10,10 @@ const port = 9000;
 
 // Routes
 app.get('/', (req, res) => {
-	res.send('uh hello');
+	res.send('Visit XXXX');
 });
 
-//Customers 
+//Get All Customers 
 app.get('/api/customers', (req, res)=> {
 	const getAllCustomers = 'SELECT * FROM customers';
 
@@ -25,8 +25,8 @@ app.get('/api/customers', (req, res)=> {
 		else res.status(200).json(results);
 	});
 });
-
-app.get('api/customers/:id', (req, res)=> {
+//Get One Customer
+app.get('/api/customers/:id', (req, res)=> {
 	const customerId = req.params.id;
 	const getOneCustomer = `SELECT * FROM customers WHERE customers.oid = ?`;
 
@@ -38,7 +38,7 @@ app.get('api/customers/:id', (req, res)=> {
 		else res.status(200).json(results);
 	});
 });
-
+//Create one customer
 app.post('/api/customers', (req, res)=> {
 	const reqBody = [req.body.first_name, req.body.last_name, req.body.home_city];
 	const insertNewCustomer = 'INSERT INTO customers VALUES (?, ?, ?)';
@@ -53,7 +53,7 @@ app.post('/api/customers', (req, res)=> {
 		}
 	});
 });
-
+//Update one customer 
 app.put('/api/customers/:id', (req, res) => {
 	const customerId = req.params.id;
 	const updateOneCustomer = `UPDATE customers SET FIRST_NAME = ?, LAST_NAME = ? WHERE customers.oid = ${customerId}`;
@@ -69,8 +69,7 @@ app.put('/api/customers/:id', (req, res) => {
 		}
 	})
 })
-//for later: I want to automatically create a new ID everytime a name is created
-
+//Delete one customer
 app.delete('/api/customers/:id', (req, res)=> {
 	const customerId = [req.params.id];
 	const deleteCustomer = `DELETE FROM customers WHERE ? = oid`;
@@ -88,6 +87,7 @@ app.delete('/api/customers/:id', (req, res)=> {
 
 //Dealerships
 
+//Get all dealerships 
 app.get('/api/dealerships', (req, res)=> {
 	const getAllDealerships = 'SELECT * FROM dealerships';
 
@@ -99,7 +99,7 @@ app.get('/api/dealerships', (req, res)=> {
 		else res.status(200).json(results);
 	});
 });
-
+//Get one dealership
 app.get('/api/dealership', (req, res)=> {
 	const dealershipLocation = req.body.location;
 	const getOneDealership = `SELECT * FROM dealerships WHERE dealerships.location = ?`;
@@ -112,27 +112,27 @@ app.get('/api/dealership', (req, res)=> {
 		else res.status(200).json(results);
 	});
 });
-
+//Create a dealership
 app.post('/api/dealerships', (req, res)=> {
-	const reqBody = [req.body.location];
-	const insertNewDealership = 'INSERT INTO dealerships VALUES (?)';
+	const reqBody = [req.body.make, req.body.location];
+	const insertNewDealership = 'INSERT INTO dealerships VALUES (?, ?)';
 
 	database.run(insertNewDealership, reqBody, error => {
 		if(error) {
-			console.log(`Create new dealership in ${req.body.location} failed`);
+			console.log(`Create new dealership ${req.body.make} ${req.body.location} failed`);
 			res.sendStatus(500);
 		} else {
-			console.log(`Successfully added new dealership ${req.body.location}`);
+			console.log(`Successfully added new dealership ${req.body.make} ${req.body.location}`);
 			res.sendStatus(200);
 		}
 	});
 });
-
+//Update one dealership
 app.put('/api/dealerships/:id', (req, res) => {
 	const dealershipId = req.params.id;
-	const updateOneDealership = `UPDATE dealerships SET LOCATION = ? WHERE dealerships.oid = ${dealershipId}`;
+	const updateOneDealership = `UPDATE dealerships SET MAKE = ?, LOCATION = ? WHERE dealerships.oid = ${dealershipId}`;
 
-	database.run(updateOneDealership, [req.body.location], error=> {
+	database.run(updateOneDealership, [req.body.make, req.body.location], error=> {
 		if(error) {
 			console.log(`Update dealerships named ${req.body.location} failed`, error);
 			res.sendStatus(500);
@@ -142,7 +142,7 @@ app.put('/api/dealerships/:id', (req, res) => {
 		}
 	})
 })
-
+//Delete one dealership
 app.delete('/api/dealerships/:id', (req, res)=> {
 	const dealershipId = [req.params.id];
 	const deleteDealership = `DELETE FROM dealerships WHERE ? = oid`;
@@ -159,7 +159,7 @@ app.delete('/api/dealerships/:id', (req, res)=> {
 })
 	
 //Cars
-
+//Get all cars 
 app.get('/api/cars', (req, res)=> {
 	const getAllCars = 'SELECT * FROM cars';
 
@@ -171,8 +171,8 @@ app.get('/api/cars', (req, res)=> {
 		else res.status(200).json(results);
 	});
 });
-
-app.get('api/cars/:id', (req, res)=> {
+//Get one car
+app.get('/api/cars/:id', (req, res)=> {
 	const carId = req.params.id;
 	const getOneCar = `SELECT * FROM cars WHERE cars.oid = ?`;
 
@@ -184,10 +184,10 @@ app.get('api/cars/:id', (req, res)=> {
 		else res.status(200).json(results);
 	});
 });
-
+//Create a car 
 app.post('/api/cars', (req, res)=> {
-	const reqBody = [req.body.make, req.body.model, req.body.year, req.body.body_type, req.body.wheel_drive];
-	const insertNewCar = 'INSERT INTO cars VALUES (?, ?, ?, ?, ?)';
+	const reqBody = [req.body.make, req.body.model, req.body.year, req.body.body_type, req.body.wheel_drive, req.price_us_dollars];
+	const insertNewCar = 'INSERT INTO cars VALUES (?, ?, ?, ?, ?, ?)';
 
 	database.run(insertNewCar, reqBody, error => {
 		if(error) {
@@ -199,10 +199,10 @@ app.post('/api/cars', (req, res)=> {
 		}
 	});
 });
-
+//Update car 
 app.put('/api/cars/:id', (req, res) => {
 	const carId = req.params.id;
-	const updateOneCar = `UPDATE cars SET MAKE = ?, MODEL = ?, YEAR = ?, BODY_TYPE = ?, WHEEL_DRIVE = ? WHERE cars.oid = ${carId}`;
+	const updateOneCar = `UPDATE cars SET MAKE = ?, MODEL = ?, YEAR = ?, BODY_TYPE = ?, WHEEL_DRIVE = ?, PRICE_US_DOLLARS = ? WHERE cars.oid = ${carId}`;
 
 	//use the query string and req.body to run the query in the database
 	database.run(updateOneCar, [req.body.make, req.body.model, req.body.year, req.body.body_type, req.body.wheel_drive], error=> {
@@ -215,8 +215,7 @@ app.put('/api/cars/:id', (req, res) => {
 		}
 	})
 })
-
-
+//Delete car 
 app.delete('/api/cars/:id', (req, res)=> {
 	const carId = [req.params.id];
 	const deleteCar = `DELETE FROM cars WHERE ? = oid`;
@@ -234,19 +233,7 @@ app.delete('/api/cars/:id', (req, res)=> {
 
 //Orders (join tables)
 
-app.get('/api/customers/:id/cars', (req, res)=> {
-	const customerId = req.params.id;
-	const queryString = "SELECT * FROM orders WHERE customer_id = ?";
-
-	database.all(queryString, [customerId], (error, results) =>{
-		if(error) {
-			console.log(error)
-			res.sendStatus(500);
-		} else res.status(200).json(results);
-	})
-})
-
-//Retrieve all orders 
+//Get all orders 
 app.get('/api/orders', (req, res) => {
 	const queryString = `SELECT * FROM orders`;
 
@@ -259,14 +246,26 @@ app.get('/api/orders', (req, res) => {
 		}
 	})
 })
+//Get one order
+app.get('/api/customers/:id/cars', (req, res)=> {
+	const customerId = req.params.id;
+	const queryString = "SELECT * FROM orders WHERE customer_id = ?";
 
-//Create an association
+	database.all(queryString, [customerId], (error, results) =>{
+		if(error) {
+			console.log(error)
+			res.sendStatus(500);
+		} else res.status(200).json(results);
+	})
+})
+//Create an order
 app.post('/api/customers/:id/cars/:carId', (req, res)=>{
 	const customerId = req.params.id;
 	const carId = req.params.carId;
-	const insertString = "INSERT INTO orders VALUES (?, ?)";
+	const reqBody = [req.body.final_price, req.body.date_of_purchase]
+	const insertString = "INSERT INTO orders VALUES (?, ?, ?, ?)";
 
-	database.run(insertString, [customerId, carId], error => {
+	database.run(insertString, [customerId, carId], reqBody, error => {
 		if(error) {
 			console.log(`Error in creating association between customer and car`, error)
 			res.sendStatus(500);
@@ -278,33 +277,6 @@ app.post('/api/customers/:id/cars/:carId', (req, res)=>{
 	});
 });
 
-// app.put("/api/orders/",  (req, res) => {
-//   console.log("Updating book category", req.body)
-//   let body = req.body
-//   let updateBookCat = "UPDATE bookcategories SET categoryID = ? WHERE bookID = ? AND categoryID = ?"
-//   //Keys are bookID, oldcatID (Category ID to be changed), newcatID (new Category ID value)
-//   database.run(updateBookCat, [body.newcatID, body.bookID, body.oldcatID], (error) => {
-//       if (error) {
-//         console.error(new Error("Could not update book cat", error))
-//         res.sendStatus(500)
-//       }    
-//       else {
-//         console.log(req.body)
-//         res.send("Updated book Cat!")
-//     }
-//   })
-// })
-
-//Delete 
-app.delete('/api/orders/:id', (req, res) => {
-	const queryInsertion = [req.params.id];
-	const queryString = `DELETE FROM orders WHERE customer_id = ?`
-
-	database.run(queryString, queryInsertion, error => {
-		if(error) res.sendStatus(500);
-		else res.sendStatus(200);
-	})
-})
 
 
 app.listen(port, () => {
