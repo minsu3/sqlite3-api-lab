@@ -1,6 +1,6 @@
 # Car Shopping API
 
-#### This API allows you to get the acquire information on top car dealerships in Bay Area as well as each customer information and their purchase order. All endpoints are under **localhost:9000/api/**. Listed below are the documentations and can be operated using Postman Application. 
+#### This API allows you to get the acquire information on top car dealerships in Bay Area as well as each customer information and their purchase order of the car. All endpoints are under **localhost:9000/api/**. Listed below are the documentations and can be operated using Postman Application. 
 
 
 ## Entity Relationship Diagram 
