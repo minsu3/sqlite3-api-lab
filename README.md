@@ -48,7 +48,7 @@
 | GET    | /api/orders     |  Get all order information   |
 | GET    | /api/customers/:id/cars  |  Get one order information   |
 | POST   | /api/customers/:id/cars/:carId     |  Create order information  |
-| POST   | /api/customers/:id/cars/:carId     | Update order information through params and body |
+| PUT   | /api/customers/:id/cars/:carId     | Update order information through params and body |
 #### Delete operation is automatically deleted from customers table
 
 
