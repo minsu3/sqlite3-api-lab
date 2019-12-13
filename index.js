@@ -10,7 +10,7 @@ const port = 9000;
 
 // Routes
 app.get('/', (req, res) => {
-	res.send('Visit XXXX');
+	res.send('To visit customer information, visit /api/customers');
 });
 
 //Get All Customers 
@@ -208,7 +208,14 @@ app.post('/api/cars', (req, res)=> {
 //Update car 
 app.put('/api/cars/:id', (req, res) => {
 	const carId = req.params.id;
-	const updateOneCar = `UPDATE cars SET MAKE = ?, MODEL = ?, YEAR = ?, BODY_TYPE = ?, WHEEL_DRIVE = ?, PRICE_US_DOLLARS = ? WHERE cars.oid = ${carId}`;
+	const updateOneCar = `
+		UPDATE cars SET MAKE = ?, 
+			MODEL = ?, 
+			YEAR = ?, 
+			BODY_TYPE = ?, 
+			WHEEL_DRIVE = ?, 
+			PRICE_US_DOLLARS = ? 
+		WHERE cars.oid = ${carId}`;
 
 	//use the query string and req.body to run the query in the database
 	database.run(updateOneCar, [req.body.make, req.body.model, req.body.year, req.body.body_type, req.body.wheel_drive], error=> {
@@ -284,7 +291,13 @@ app.post('/api/customers/:id/cars/:carId', (req, res)=>{
 //Update
 app.put("/api/customers/:id/cars/:carId", (req, res) => {
 const reqParams = [req.params.id, req.params.carId, req.body.final_price, req.body.date_of_purchase, req.params.id, req.params.carId]
-let updateOrders = `UPDATE orders SET customer_id = ?, car_id = ?, final_price = ?, date_of_purchase = ? WHERE orders.customer_id = ? AND orders.car_id = ?`
+let updateOrders = `
+	UPDATE orders SET 
+		customer_id = ?, 
+		car_id = ?, 
+		final_price = ?, 
+		date_of_purchase = ? 
+	WHERE orders.customer_id = ? AND orders.car_id = ?`
 
 	database.run(updateOrders, reqParams, error=> {
 		if(error) {
